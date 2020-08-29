@@ -5,7 +5,17 @@ const db = require('../data/dbConfig')
 // GET all tasks
 router.get('/', async (req, res, next) => {
     try {
-        const tasks = await db.select("*").from("task")
+        // const tasks = await db.select("*").from("task")
+        const tasks = await db("task")
+            .join("project", "project.id", "=", "task.project_id")
+            .select(
+                "project.name as Project Name", 
+                "project.description as Project Description", 
+                "task.project_id as Project ID", 
+                "task.description as Task Description", 
+                "task.notes as Task Notes", 
+                "task.completed as Task Completed"
+                )
         res.status(200).json(tasks)
     } catch (error) {
         next(error)
